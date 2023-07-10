@@ -1,6 +1,6 @@
 mod window;
 
-use crate::window::download_url::{DownloadUrl, SaveTarget};
+use crate::window::download_url::DownloadUrl;
 use eframe::{run_native, App, Frame, NativeOptions};
 use egui::{CentralPanel, Context};
 use std::fs::File;
@@ -41,7 +41,7 @@ impl App for MainWindow {
         }
 
         let url = &mut self.window_download_url;
-        let target = (url.urls).clone();
+        let target = url.clone();
         if !(target.url.is_empty() || target.local_path.is_empty()) && url.is_start {
             url.is_start = false;
             tokio::spawn(async move {
@@ -54,7 +54,7 @@ impl App for MainWindow {
 }
 
 async fn download_file_to_local_path(
-    target: &SaveTarget,
+    target: &DownloadUrl,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let file_path = Path::new(&target.local_path).join(
         SystemTime::now()
